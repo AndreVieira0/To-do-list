@@ -45,19 +45,26 @@ export class AuthService {
         const passwordHash = await bcrypt.hash(password, salt);
 
         // 3. Criar o usuário
-        return await this.usersService.create({
+        const newUser = await this.usersService.create({
             name: name,
             email: email,
             password: passwordHash,
         });
+        
+        // 4. Já gera o token e devolve, para fazer auto-login
+        return this.generateToken(newUser);
     }
     
-        //gerar o token JWT
+    //gerar o token JWT
     private generateToken(user: UserEntity){
-            return this.jwtService.sign({
-                id: user.id,
-                name: user.name,
-                email: user.email,
-            });
-        }
+        const token = this.jwtService.sign({
+            id: user.id,
+            name: user.name,
+            email: user.email,
+        });
+        
+        return {
+            access_token: token
+        };
     }
+}
