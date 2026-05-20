@@ -217,19 +217,35 @@ export function Dashboard() {
           {/* Barra de Pesquisa e Filtros */}
           <div className="flex flex-col md:flex-row gap-4 justify-between items-center mb-6 bg-slate-900/30 p-2 rounded-lg border border-white/5">
             <div className="flex gap-2 w-full md:w-auto">
-              {(['todas', 'pendentes', 'concluidas'] as FilterType[]).map((f) => (
-                <button
-                  key={f}
-                  onClick={() => setFilter(f)}
-                  className={`flex-1 md:flex-none px-4 py-2 rounded-md text-sm font-medium transition-colors capitalize ${
-                    filter === f 
-                      ? 'bg-violet-600 text-white shadow-md' 
-                      : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-                  }`}
-                >
-                  {f}
-                </button>
-              ))}
+              {(['todas', 'pendentes', 'concluidas'] as FilterType[]).map((f) => {
+                const count = 
+                  f === 'todas' ? tasks.length :
+                  f === 'pendentes' ? tasks.filter(t => t.status === 'pendente').length :
+                  tasks.filter(t => t.status === 'concluida').length;
+
+                return (
+                  <button
+                    key={f}
+                    onClick={() => setFilter(f)}
+                    className={`flex-1 md:flex-none px-4 py-2 rounded-md text-sm font-medium transition-colors capitalize flex items-center justify-center gap-2 ${
+                      filter === f
+                        ? 'bg-violet-600 text-white shadow-md'
+                        : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                    }`}
+                  >
+                    <span>{f}</span>
+                    <span 
+                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                        filter === f 
+                          ? 'bg-white/25 text-white' 
+                          : 'bg-slate-800 text-slate-300'
+                      }`}
+                    >
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
 
             <div className="w-full md:w-64 relative">
